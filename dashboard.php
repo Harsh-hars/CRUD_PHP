@@ -31,7 +31,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="border-b border-gray-200">
+                    <!-- Sample row to demonstrate -->
+                    <!-- <tr class="border-b border-gray-200">
                         <td class="py-2 px-4">0</td>
                         <td class="py-2 px-4">John Doe</td>
                         <td class="py-2 px-4">25</td>
@@ -40,7 +41,7 @@
                             <button class="bg-blue-500 text-white px-2 py-1 rounded">Edit</button>
                             <button class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
                         </td>
-                    </tr>
+                    </tr> -->
 
                     <?php
                     include './config.php';
