@@ -1,19 +1,31 @@
-
 <?php
 include './config.php';
-if(isset($_POST['submit'])){
-   $name = $_POST['name']; 
-   $email = $_POST['email']; 
-   $password = md5($_POST['password']); 
-   $age = $_POST['age']; 
+if (isset($_POST['submit'])) {
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $password = md5($_POST['password']);
+    $age = $_POST['age'];
+    $image = $_FILES['image'];
 
-   $res = mysqli_query($conn,"INSERT INTO `users`( `name`, `email`, `password`, `age`) VALUES ('$name','$email','$password','$age')");
+    $folder = "uploads/";
 
-    echo "<script>
+    $imageName = $_FILES['image']['name'];
+    $tempName = $_FILES['image']['tmp_name'];
+
+    if (!is_dir($folder)) {
+        mkdir($folder, 0777, true);
+    }
+
+    $path = $folder . basename($imageName);
+
+    if (move_uploaded_file($tempName, $path)) {
+        $res = mysqli_query($conn, "INSERT INTO `user`( `name`, `email`, `password`, `age`, `image`) VALUES ('$name','$email','$password','$age' , '$path')");
+
+        echo "<script>
     alert('user created');
-    window.location.href='./dashboard.php';
+    window.location.href='./index.php';
     </script>";
-  
+    }
 }
 
 ?>
@@ -23,16 +35,18 @@ if(isset($_POST['submit'])){
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tailwind CSS Form</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="container mx-auto p-4">
         <h1 class="text-2xl font-bold mb-4 text-center">Add User</h1>
-        <form method="POST" action="./add.php" class="max-w-lg mx-auto bg-white p-8 shadow-lg rounded-lg">
+        <form method="POST" class="max-w-lg mx-auto bg-white p-8 shadow-lg rounded-lg" enctype="multipart/form-data">
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
                     Name
@@ -57,16 +71,24 @@ if(isset($_POST['submit'])){
                 </label>
                 <input name="age" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="Age" type="number" placeholder="Your Age">
             </div>
-           
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="image">
+                    Upload Image
+                </label>
+                <input name="image" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="image" type="file">
+            </div>
+
             <div class="flex items-center justify-between">
                 <button name="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
                     Submit
                 </button>
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" >
-                   <a href="./dashboard.php">Back</a>
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    <a href="./dashboard.php">Back</a>
                 </button>
             </div>
         </form>
     </div>
 </body>
+
 </html>

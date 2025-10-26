@@ -3,13 +3,14 @@ include './config.php';
 
 
     $id = $_GET['editid'];
-    $res = mysqli_query($conn , "SELECT * FROM `users` WHERE id = '$id'");
+    $res = mysqli_query($conn , "SELECT * FROM `user` WHERE id = '$id'");
     $row = mysqli_fetch_assoc($res);
     if($row){
     $name = $row['name'];
     $email = $row['email'];
     $password = $row['password'];
     $age = $row['age'];
+    $image = $row['image'];
    }
 
 if(isset($_POST['submit'])){
@@ -17,14 +18,28 @@ if(isset($_POST['submit'])){
     $email = $_POST['email']; 
     $password = md5($_POST['password']); 
     $age = $_POST['age']; 
- 
-    $res = mysqli_query($conn,"UPDATE `users` SET `id`='$id',`name`='$name',`email`='$email',`password`='$password',`age`='$age' WHERE id = '$id'");
- 
-     echo "<script>
-     alert('updated');
-     window.location.href='./dashboard.php';
-     </script>
-     ";
+
+    $image = $_FILES['image'];
+
+    $folder = "uploads/";
+
+    $imageName = $_FILES['image']['name'];
+    $tempName = $_FILES['image']['tmp_name'];
+
+    if (!is_dir($folder)) {
+        mkdir($folder, 0777, true);
+    }
+
+    $path = $folder . basename($imageName);
+
+    if (move_uploaded_file($tempName, $path)) {
+    $res = mysqli_query($conn,"UPDATE `user` SET `id`='$id',`name`='$name',`email`='$email',`password`='$password',`age`='$age',`image`= $image WHERE id = '$id'");
+
+        echo "<script>
+    alert('user created');
+    window.location.href='./index.php';
+    </script>";
+    }
    
  }
 
@@ -42,7 +57,7 @@ if(isset($_POST['submit'])){
 <body>
     <div class="container mx-auto p-4">
         <h1 class="text-2xl font-bold mb-4 text-center">Add User</h1>
-        <form method="POST"  class="max-w-lg mx-auto bg-white p-8 shadow-lg rounded-lg">
+        <form method="POST"  class="max-w-lg mx-auto bg-white p-8 shadow-lg rounded-lg" enctype="multipart/form-data">
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
                     Name
@@ -66,6 +81,13 @@ if(isset($_POST['submit'])){
                     Age
                 </label>
                 <input value="<?php echo $age ?>" name="age" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="Age" type="number" placeholder="Your Age">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="image">
+                    Upload Image
+                </label>
+                <input value="<?php echo $image ?>" name="image" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="image" type="file">
             </div>
            
             <div class="flex items-center justify-between">

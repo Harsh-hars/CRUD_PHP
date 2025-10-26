@@ -45,7 +45,9 @@
 
                     <?php
                     include './config.php';
-                    $res = mysqli_query($conn, "SELECT * FROM `users`");
+                    $res = mysqli_query($conn, "SELECT * FROM `user`");
+                    // print_r($res);
+                    
                     while ($row = mysqli_fetch_assoc($res)) {
                         $id = $row['id'];
                         $name = $row['name'];
